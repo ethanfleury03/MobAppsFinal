@@ -1,0 +1,11 @@
+Ideas:
+1. Animal Adoption Finder
+  Input:
+    - Would take a animal type, color, breed, age, or whatever other options we think of
+    - Add a feature where we can take user home address and tell them how far they are by car ride to shelter
+  Output:
+    - Find closest shelter that has everything that user decises and returns address, name, age, or whatever 
+    - Also return distance (mi) from their home address
+  Tools:
+    - Andoid Studio
+    - Api's
