@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
 from databaseconn import initialize_database, add_user, check_login
+import time
 
 # Ethan and Adam
 class SignUpScreen(Screen):
@@ -43,6 +44,7 @@ class SignUpScreen(Screen):
         if add_user(username, password):
             self.feedback_label.text = "Sign-up successful!"
             self.feedback_label.color = (0, 1, 0, 1)  # Green
+            self.manager.current = 'signin'
         else:
             self.feedback_label.text = "Sign-up failed. Try a different username."
             self.feedback_label.color = (1, 0, 0, 1)  # Red
