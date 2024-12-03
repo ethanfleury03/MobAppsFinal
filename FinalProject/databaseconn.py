@@ -1,5 +1,21 @@
 import sqlite3
 import bcrypt
+from git import Repo
+import os
+
+# Function to commit changes to GitHub
+def commit_to_github(commit_message):
+    try:
+        repo_path = os.path.dirname(os.path.abspath(__file__))
+        repo = Repo(repo_path)
+        repo.git.add('users.db')
+        repo.index.commit(commit_message)
+        origin = repo.remote(name='origin')
+        origin.push()
+        print("Changes committed and pushed to GitHub")
+    except Exception as e:
+        print(f"An error occurred while committing to GitHub: {e}")
+
 
 # Initialize SQLite database
 def initialize_database():
