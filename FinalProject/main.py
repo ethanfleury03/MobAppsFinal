@@ -4,9 +4,9 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
+from databaseconn import connect_to_database, add_user, check_login
 
-
-class LogInScreen(Screen):
+class SignUpScreen(Screen):
     password_input = ObjectProperty(None)
     confirm_input = ObjectProperty(None)
     feedback_label = ObjectProperty(None)
@@ -23,10 +23,23 @@ class LogInScreen(Screen):
             self.feedback_label.text = "Password does not match"
             self.feedback_label.color = (1, 0, 0, 1)
 
-class SecondScreen(Screen):
+    def login(self):
+        email = self.ids["email_input"].text
+        password = self.password_input.text
+
+        if check_login(email, password):
+            self.manager.current = "second"
+
+        else:
+            self.feedback_label
+
+class SignInScreen(Screen):
     pass
 
-class ThirdScreen(Screen):
+class PetFinderScreen(Screen):
+    pass
+
+class PetLocaterScreen(Screen):
     pass
 
 class MyApp(App):
@@ -39,4 +52,3 @@ class MyApp(App):
 
 if __name__ == "__main__":
     MyApp().run()
-
