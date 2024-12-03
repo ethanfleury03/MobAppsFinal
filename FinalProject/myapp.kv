@@ -1,39 +1,18 @@
 #:kivy 2.0.0
 
-<LogInScreen>:
+<SignUpScreen>:
+    username_input: username
     password_input: password
     confirm_input: confirm
     feedback_label: feedback_label
     FloatLayout:
-        # Background Image
         Image:
-            source: "pet_background.jpg"  
+            source: "pet_background.jpg"
             allow_stretch: True
             keep_ratio: False
             size_hint: 1, 1
             pos_hint: {"x": 0, "y": 0}
 
-        # Sign-up Button
-        Button:
-            text: "Sign up"
-            font_size: 30
-            background_color: 1, 0.5, 0, 1
-            size_hint: 0.4, None
-            height: "60dp"
-            pos_hint: {"center_x": 0.5, "center_y": 0.3}
-            on_press: app.root.current = "signin"
-
-        # Sign-in Button
-        Button:
-            text: "Sign in"
-            font_size: 30
-            background_color: 1, 0.5, 0, 1
-            size_hint: 0.4, None
-            height: "60dp"
-            pos_hint: {"center_x": 0.5, "center_y": 0.12}
-            on_press: app.root.current = "signin"
-
-        # Welcome Label
         Label:
             text: "Welcome to Pet Finder"
             color: 1, 0.5, 0, 1
@@ -42,26 +21,9 @@
             size_hint: None, None
             size: "400dp", "100dp" 
             pos_hint: {"center_x": 0.5, "center_y": 0.85}
-        
-        #Password match label
-        Label:
-            id: feedback_label
-            text: "Password does not match"
-            color: 1, 0, 0, 1
-            font_size: 20
-            size_hint: None, None
-            pos_hint: {"x": 0.25, "y": 0.34}
 
-        #Already have an account?
-        Label:
-            text: "Already have an account?"
-            font_size: 20
-            color: 0, 0, 0, 100
-            size_hint: None, None
-            pos_hint: {"center_x": 0.50, "center_y": 0.2}
-
-        # Text Inputs and Labels
         TextInput:
+            id: username
             hint_text: "Email"
             font_size: 30
             size_hint: 0.6, None
@@ -87,38 +49,62 @@
             pos_hint: {"center_x": 0.5, "center_y": 0.45}
             on_text: root.check_password_match()
 
-<SecondScreen>:
-    FloatLayout:
-    # Background Image
-        Image:
-            source: "pet_background.jpg"  
-            allow_stretch: True
-            keep_ratio: False
-            size_hint: 1, 1
-            pos_hint: {"x": 0, "y": 0}
+        Label:
+            id: feedback_label
+            text: ""
+            color: 1, 0, 0, 1
+            font_size: 20
+            size_hint: None, None
+            pos_hint: {"x": 0.25, "y": 0.34}
 
-    # SignIn Button
+        Button:
+            text: "Sign up"
+            font_size: 30
+            background_color: 1, 0.5, 0, 1
+            size_hint: 0.4, None
+            height: "60dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.3}
+            on_press: root.sign_up()
+
+        Label:
+            text: "Already have an account?"
+            font_size: 20
+            color: 0, 0, 0, 1
+            size_hint: None, None
+            pos_hint: {"center_x": 0.50, "center_y": 0.2}
+
         Button:
             text: "Sign in"
             font_size: 30
             background_color: 1, 0.5, 0, 1
             size_hint: 0.4, None
             height: "60dp"
-            pos_hint: {"center_x": 0.5, "center_y": 0.3}
-            on_press: app.root.current = "petfinder"
+            pos_hint: {"center_x": 0.5, "center_y": 0.12}
+            on_press: app.root.current = "signin"
 
-    # Welcome Label
+<SignInScreen>:
+    username_input: username
+    password_input: password
+    feedback_label: feedback_label
+    FloatLayout:
+        Image:
+            source: "pet_background.jpg"
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {"x": 0, "y": 0}
+
         Label:
-            text: "Welcome to Pet Finder"
+            text: "Welcome Back to Pet Finder"
             color: 1, 0.5, 0, 1
             font_size: 60
             font_name: "arialbd.ttf"
             size_hint: None, None
             size: "400dp", "100dp" 
             pos_hint: {"center_x": 0.5, "center_y": 0.85}
-    
-     # Text Inputs and Labels
+
         TextInput:
+            id: username
             hint_text: "Email"
             font_size: 30
             size_hint: 0.6, None
@@ -133,31 +119,35 @@
             size_hint: 0.6, None
             height: "50dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.55}
-    
 
+        Label:
+            id: feedback_label
+            text: ""
+            color: 1, 0, 0, 1
+            font_size: 20
+            size_hint: None, None
+            pos_hint: {"x": 0.25, "y": 0.34}
 
-<ThirdScreen>:
+        Button:
+            text: "Sign in"
+            font_size: 30
+            background_color: 1, 0.5, 0, 1
+            size_hint: 0.4, None
+            height: "60dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.3}
+            on_press: root.sign_in()
+
+<PetFinderScreen>:
     FloatLayout:
-    # Background Image
         Image:
-            source: "pet_background.jpg"  
+            source: "pet_background.jpg"
             allow_stretch: True
             keep_ratio: False
             size_hint: 1, 1
             pos_hint: {"x": 0, "y": 0}
 
-        
-
-
-        
-
-        
-
-        
-            
-        
-    
-    
-
-
-
+        Label:
+            text: "Welcome to the Pet Finder Dashboard!"
+            font_size: 40
+            color: 1, 0.5, 0, 1
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
