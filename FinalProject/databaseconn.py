@@ -1,74 +1,62 @@
-import mysql.connector
-from mysql.connector import Error
+import sqlite3
 import bcrypt
-import csv
-import sys
 
-
-def connect_to_database():
-    try:
-        conn = mysql.connector.connect(
-            host='127.0.0.1',
-            user='root',
-            passwd = 'Ethan88ninja',
-            database = 'PetFinder'
+# Initialize SQLite database
+def initialize_database():
+    conn = sqlite3.connect("users.db")
+    cur = conn.cursor()
+    # Create users table if it doesn't exist
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
         )
+    """)
+    conn.commit()
+    conn.close()
 
-    except Error as e:
-        return None
-    
+# Add a new user
 def add_user(username, password):
     try:
-        conn = connect_to_database()
-        if conn is None:
-            return False
-        
+        conn = sqlite3.connect("users.db")
         cur = conn.cursor()
 
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        
-        # Insert the new user into the database
-        query = "INSERT INTO users (UsernameUsers, PasswordUsers) VALUES (%s, %s)"
-        cur.execute(query, (username, hashed_password))
-        conn.commit()
+        # Hash the password
+        hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
+        # Insert into users table
+        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
+        conn.commit()
         print("User added successfully.")
         return True
-    except Error as e:
-        print(f"Error: {e}")
+    except sqlite3.IntegrityError:
+        print("Error: Username already exists.")
         return False
     finally:
-        if conn:
-            cur.close()
-            conn.close()
+        conn.close()
 
+# Check login credentials
 def check_login(username, password):
     try:
-        connection = connect_to_database()
-        if connection is None:
-            return False
+        conn = sqlite3.connect("users.db")
+        cur = conn.cursor()
 
-        cur = connection.cursor()
-
-        query = "SELECT PasswordUsers FROM users WHERE UsernameUsers = %s"
-        cur.execute(query, (username,))
+        # Retrieve the stored password for the username
+        cur.execute("SELECT password FROM users WHERE username = ?", (username,))
         result = cur.fetchone()
 
         if result:
             stored_password = result[0]
-            if bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
-                print('Login Succesful')
+            # Compare the provided password with the stored hashed password
+            if bcrypt.checkpw(password.encode("utf-8"), stored_password):
+                print("Login successful.")
                 return True
             else:
-                print("Invalid password")
+                print("Invalid password.")
                 return False
         else:
             print("User not found.")
             return False
-    except Error as e:
-        print(f"Error: {e}")
-        return False
     finally:
-        if connection:
-            cur.close()
-            connection.close()
+        conn.close()
