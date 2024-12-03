@@ -1,6 +1,9 @@
 #:kivy 2.0.0
 
 <MainScreen>:
+    password_input: password
+    confirm_input: confirm
+    feedback_label: feedback_label
     FloatLayout:
         # Background Image
         Image:
@@ -39,6 +42,17 @@
             size_hint: None, None
             size: "400dp", "100dp" 
             pos_hint: {"center_x": 0.5, "center_y": 0.85}
+        
+        #Password match label
+        Label:
+            id: feedback_label
+            text: "Password does not match"
+            color: 1, 0, 0, 1
+            font_size: 20
+            font_name: "arialbd.ttf"
+            size_hint: None, None
+            pos_hint: {"x": 0.25, "y": 0.34}
+
 
         # Text Inputs and Labels
         TextInput:
@@ -49,6 +63,7 @@
             pos_hint: {"x": 0.2, "y": 0.65}
 
         TextInput:
+            id: password
             hint_text: "Password"
             font_size: 30
             password: True
@@ -57,12 +72,14 @@
             pos_hint: {"center_x": 0.5, "center_y": 0.55}
 
         TextInput:
+            id: confirm
             hint_text: "Confirm Password"
             font_size: 30
             password: True
             size_hint: 0.6, None
             height: "50dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.45}
+            on_text: root.check_password_match()
 
 <SecondScreen>:
     FloatLayout:
