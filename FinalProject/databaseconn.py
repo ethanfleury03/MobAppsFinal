@@ -1,20 +1,17 @@
 import sqlite3
 import bcrypt
 from git import Repo
-import os
+import os, subprocess
 
 # Function to commit changes to GitHub
 def commit_to_github(commit_message):
     try:
-        repo_path = os.path.dirname(os.path.abspath(__file__))
-        repo = Repo(repo_path)
-        repo.git.add('users.db')
-        repo.index.commit(commit_message)
-        origin = repo.remote(name='origin')
-        origin.push()
+        subprocess.run(["git", "add", "users.db"], check=True)
+        subprocess.run(["git", "commit", "-m", commit_message], check=True)
+        subprocess.run(["git", "push"], check=True)
         print("Changes committed and pushed to GitHub")
-    except Exception as e:
-        print(f"An error occurred while committing to GitHub: {e}")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
 
 
 # Initialize SQLite database
@@ -45,6 +42,7 @@ def add_user(username, password):
         cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
         conn.commit()
         print("User added successfully.")
+        commit_to_github(f"Added new user: {username}")
         return True
     except sqlite3.IntegrityError:
         print("Error: Username already exists.")
