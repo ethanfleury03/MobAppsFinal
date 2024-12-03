@@ -6,7 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import StringProperty, ObjectProperty
 
 
-class MainScreen(Screen):
+class LogInScreen(Screen):
     password_input = ObjectProperty(None)
     confirm_input = ObjectProperty(None)
     feedback_label = ObjectProperty(None)
@@ -26,11 +26,15 @@ class MainScreen(Screen):
 class SecondScreen(Screen):
     pass
 
+class ThirdScreen(Screen):
+    pass
+
 class MyApp(App):
     def build(self):
         sm = ScreenManager()
-        sm.add_widget(MainScreen(name="main"))
+        sm.add_widget(LogInScreen(name="login"))
         sm.add_widget(SecondScreen(name="second"))
+        sm.add_widget(ThirdScreen(name="third"))
         return sm
 
 if __name__ == "__main__":
