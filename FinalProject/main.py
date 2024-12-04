@@ -3,7 +3,7 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
 from databaseconn import initialize_database, add_user, check_login
 import time
-
+mm
 # Ethan and Adam
 class SignUpScreen(Screen):
     # References to UI elements
