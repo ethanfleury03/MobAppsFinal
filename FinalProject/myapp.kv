@@ -140,7 +140,7 @@
 <PetFinderScreen>:
     FloatLayout:
         Image:
-            source: "pet_background.jpg"
+            source: "white_background.jpg"
             allow_stretch: True
             keep_ratio: False
             size_hint: 1, 1
@@ -151,3 +151,58 @@
             font_size: 40
             color: 1, 0.5, 0, 1
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+         # Scrollable Container for Cards
+        ScrollView:
+            size_hint: 0.9, 0.5
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+            do_scroll_y: False
+            do_scroll_x: True
+            bar_width: 0
+
+            GridLayout:
+                id: card_container
+                cols: 1
+                size_hint_x: None
+                height: self.minimum_height
+                width: self.minimum_width
+                spacing: dp(10)
+                padding: [15, 0]
+                # Add multiple cards dynamically if needed
+
+                # Example Card 1
+                Card:
+                    Label:
+                        text: "Adopt a Dog!"
+                        font_size: 20
+                        color: 0, 0, 0, 1
+
+                # Example Card 2
+                Card:
+                    Label:
+                        text: "Find a Cat!"
+                        font_size: 20
+                        color: 0, 0, 0, 1
+
+                # Example Card 3
+                Card:
+                    Label:
+                        text: "Small Animals Near You!"
+                        font_size: 20
+                        color: 0, 0, 0, 1
+
+<Card@BoxLayout>:
+    orientation: 'vertical'
+    size_hint: None, None
+    size: dp(200), dp(200)  # Adjust the card size here
+    padding: dp(20)
+    spacing: dp(10)
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 0.25
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10]
+        Color:
+            rgba: 0.1, 0.1, 0.2, 0.1  # subtle backdrop shadow
