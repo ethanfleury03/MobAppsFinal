@@ -139,6 +139,7 @@
 
 <PetFinderScreen>:
     FloatLayout:
+        # Background Image
         Image:
             source: "white_background.jpg"
             allow_stretch: True
@@ -146,50 +147,34 @@
             size_hint: 1, 1
             pos_hint: {"x": 0, "y": 0}
 
+        # Welcome Label
         Label:
             text: "Welcome to the Pet Finder Dashboard!"
             font_size: 40
             color: 1, 0.5, 0, 1
-            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            pos_hint: {"center_x": 0.5, "center_y": 0.9}
 
-         # Scrollable Container for Cards
-        ScrollView:
-            size_hint: 0.9, 0.5
+        # Search Bar
+        TextInput:
+            id: search_input
+            hint_text: "Search for a pet (e.g., dog, cat)"
+            size_hint: 0.8, 0.1
+            pos_hint: {"center_x": 0.5, "center_y": 0.8}
+            multiline: False
+
+        # Search Button
+        Button:
+            text: "Search"
+            size_hint: 0.3, 0.1
+            pos_hint: {"center_x": 0.5, "center_y": 0.7}
+            on_press: root.on_search(search_input.text)
+
+        # Swipeable Cards (Carousel)
+        Carousel:
+            id: pet_carousel
+            direction: 'right'
+            size_hint: 0.9, 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.4}
-            do_scroll_y: False
-            do_scroll_x: True
-            bar_width: 0
-
-            GridLayout:
-                id: card_container
-                cols: 1
-                size_hint_x: None
-                height: self.minimum_height
-                width: self.minimum_width
-                spacing: dp(10)
-                padding: [15, 0]
-                # Add multiple cards dynamically if needed
-
-                # Example Card 1
-                Card:
-                    Label:
-                        text: "Adopt a Dog!"
-                        font_size: 20
-                        color: 0, 0, 0, 1
-
-                # Example Card 2
-                Card:
-                    Label:
-                        text: "Find a Cat!"
-                        font_size: 20
-                        color: 0, 0, 0, 1
-
-                # Example Card 3
-                Card:
-                    Label:
-                        text: "Small Animals Near You!"
-                        font_size: 20
-                        color: 0, 0, 0, 1
 
 <Card@BoxLayout>:
     orientation: 'vertical'

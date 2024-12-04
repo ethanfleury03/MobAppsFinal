@@ -1,6 +1,9 @@
 from kivy.app import App
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.image import Image
 from databaseconn import initialize_database, add_user, check_login
 import time
 
@@ -74,8 +77,36 @@ class SignInScreen(Screen):
 
 
 class PetFinderScreen(Screen):
-    pass
+    """Screen for user to find pet wanted."""
+    def populate_cards(self, search_results):
+        carousel = self.ids.pet_carousel
+        carousel.clear_widgets()
 
+        for pet in search_results:
+            card = BoxLayout(orientation='vertical', size_hint=(None, None), size=(300, 400), padding=20, spacing=10)
+
+            # Pet name label
+            card.add_widget(Label(
+                text=f"{pet['name']}",
+                font_size=24,
+                color=(0, 0, 0, 1),
+                size_hint=(1, 0.2)
+            ))
+
+            # Pet image
+            card.add_widget(Image(
+                source=pet['image'],
+                size_hint=(1, 0.8)
+            ))
+
+            # Add the card to the carousel
+            carousel.add_widget(card)
+
+    def on_search(self, search_query):
+        pass
+
+    def fetch_pets(self, query):
+        pass
 
 class MyApp(App):
     def build(self):
