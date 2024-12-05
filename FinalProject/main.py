@@ -6,6 +6,11 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from databaseconn import initialize_database, add_user, check_login
 import time
+from kivy.uix.button import Button
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.dropdown import DropDown
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
 
 # Ethan and Adam
 class SignUpScreen(Screen):
@@ -78,7 +83,31 @@ class SignInScreen(Screen):
 
 class PetFinderScreen(Screen):
     """Screen for user to find pet wanted."""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.items = [f"Breed {i}" for i in range(1, 151)]  # Example list of 150 items
+        self.populate_dropdown()
+
+    def populate_dropdown(self):
+        """Populate the dropdown menu."""
+        dropdown = self.ids.dropdown
+        grid = self.ids.options_grid  # Reference the GridLayout inside the dropdown
+
+        for item in self.items:
+            btn = Button(text=item, size_hint_y=None, height=40)
+            btn.bind(on_release=lambda btn, item=item: self.select_pet_option(item))
+            grid.add_widget(btn)
+
+    def select_pet_option(self, option_text):
+        """Handle selecting a pet option from the dropdown."""
+        print(f"Selected pet: {option_text}")
+        self.ids.main_button.text = option_text  # Update the main button's text
+        self.ids.dropdown.dismiss()  # Close the dropdown
+    
+
     def populate_cards(self, search_results):
+        """Add pet cards to the carousel."""
         carousel = self.ids.pet_carousel
         carousel.clear_widgets()
 
@@ -103,7 +132,14 @@ class PetFinderScreen(Screen):
             carousel.add_widget(card)
 
     def on_search(self, search_query):
-        pass
+        """Search logic (mock)."""
+        # Example search results
+        mock_results = [
+            {"name": "Buddy", "image": "dog_image.jpg"},
+            {"name": "Kitty", "image": "cat_image.jpg"},
+        ]
+        self.populate_cards(mock_results)
+
 
     def fetch_pets(self, query):
         pass

@@ -154,20 +154,68 @@
             color: 1, 0.5, 0, 1
             pos_hint: {"center_x": 0.5, "center_y": 0.9}
 
-        # Search Bar
-        TextInput:
-            id: search_input
-            hint_text: "Search for a pet (e.g., dog, cat)"
-            size_hint: 0.8, 0.1
-            pos_hint: {"center_x": 0.5, "center_y": 0.8}
-            multiline: False
-
         # Search Button
         Button:
             text: "Search"
-            size_hint: 0.3, 0.1
-            pos_hint: {"center_x": 0.5, "center_y": 0.7}
+            size_hint: 0.15, 0.05
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
             on_press: root.on_search(search_input.text)
+        
+        # Dog Label
+        Label:
+            text: "Dog"
+            color: 0, 0, 0, 100
+            font_size: 30
+            pos_hint: {"center_x": 0.3, "center_y": 0.83}
+        
+        # Cat Label
+        Label:
+            text: "Cat"
+            color: 0, 0, 0, 100
+            font_size: 30
+            pos_hint: {"center_x": 0.3, "center_y": 0.78}
+
+        # Male Label
+        Label:
+            text: "Male"
+            color: 0, 0, 0, 100
+            font_size: 30
+            pos_hint: {"center_x": 0.43, "center_y": 0.83}
+
+        # Female Label
+        Label:
+            text: "Female"
+            color: 0, 0, 0, 100
+            font_size: 30
+            pos_hint: {"center_x": 0.43, "center_y": 0.78}
+
+        # Dog Button
+        ToggleButton:
+            group: "group_1"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.33, "y": 0.8}
+            font_size: 20
+
+        # Cat Button
+        ToggleButton:
+            group: "group_1"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.33, "y": 0.75}
+            font_size: 20
+        
+        # Male Button
+        ToggleButton:
+            group: "group_male"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.48, "y": 0.8}
+            font_size: 20
+
+        # Female Button
+        ToggleButton:
+            group: "group_female"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.48, "y": 0.75}
+            font_size: 20
 
         # Swipeable Cards (Carousel)
         Carousel:
@@ -175,6 +223,104 @@
             direction: 'right'
             size_hint: 0.9, 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        
+        # Dog Breed Drop Down Menu
+        Button:
+            id: main_button
+            text: "Breed"
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {"x": 0.6, "y": 0.8}
+            on_release: dropdown.open(self)
+
+        DropDown:
+            id: dropdown
+            ScrollView:
+                size_hint: 1, None
+                height: 200  
+
+                GridLayout:
+                    id: options_grid
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+
+        # Age Range LABEL
+        Label:
+            text: "Age Range:"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.33, "center_y": 0.7}
+        
+        # OPTIONAL LABEL
+        Label:
+            text: "(Optional)"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.33, "center_y": 0.65}
+
+        # 0-2 LABEL
+        Label:
+            text: "0-2"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.43, "center_y": 0.7}
+
+        # 3-7 LABEL
+        Label:
+            text: "3-7"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.43, "center_y": 0.65}
+
+        # 8+ LABEL
+        Label:
+            text: "8+"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.43, "center_y": 0.6}
+
+        # 0-2 Radio Button
+        ToggleButton:
+            group: "group_age"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.48, "y": 0.68}
+            font_size: 20
+
+        # 3-7 Radio Button
+        ToggleButton:
+            group: "group_age"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.48, "y": 0.63}
+            font_size: 20
+
+        # 8+ Radio Button
+        ToggleButton:
+            group: "group_age"
+            size_hint: 0.03, 0.04
+            pos_hint: {"x": 0.48, "y": 0.58}
+            font_size: 20
+
+        # Radius LABEL
+        Label:
+            text: "How far are you willing to travel?"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.5, "center_y": 0.55}
+
+        
+        # Radius Text Input
+        TextInput:
+            hint_text: "Radius (in miles)"
+            font_size: 28
+            size_hint: 0.5, None
+            height: "40dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.48}
+
+
+
+                
+        
 
 <Card@BoxLayout>:
     orientation: 'vertical'
