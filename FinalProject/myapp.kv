@@ -191,36 +191,36 @@
             pos_hint: {"center_x": 0.43, "center_y": 0.78}
 
         # Dog Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_1"
             size_hint: 0.03, 0.04
-            pos_hint: {"x": 0.33, "y": 0.8}
+            pos_hint: {"x": 0.33, "y": 0.81}
             font_size: 20
 
         # Cat Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_1"
             size_hint: 0.03, 0.04
-            pos_hint: {"x": 0.33, "y": 0.75}
+            pos_hint: {"x": 0.33, "y": 0.76}
             font_size: 20
         
         # Male Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_male"
             size_hint: 0.03, 0.04
-            pos_hint: {"x": 0.48, "y": 0.8}
+            pos_hint: {"x": 0.48, "y": 0.81}
             font_size: 20
 
         # Female Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_female"
             size_hint: 0.03, 0.04
-            pos_hint: {"x": 0.48, "y": 0.75}
+            pos_hint: {"x": 0.48, "y": 0.76}
             font_size: 20
 
         # Swipeable Cards (Carousel)
         Carousel:
-            id: pet_carousel
+            id: carousel
             direction: 'right'
             size_hint: 0.9, 0.6
             pos_hint: {"center_x": 0.5, "center_y": 0.4}
@@ -282,21 +282,21 @@
             pos_hint: {"center_x": 0.43, "center_y": 0.6}
 
         # 0-2 Radio Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.68}
             font_size: 20
 
         # 3-7 Radio Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.63}
             font_size: 20
 
         # 8+ Radio Button
-        ToggleButton:
+        CircularToggleButton:
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.58}
@@ -351,7 +351,16 @@
 <PetCarousel>:
     canvas.before:
         Color:
-            rgba: 0, 0, 0, 0.1
-        Rectangle:
-            pos: self.pos
-            size: self.size
+            rgba: 0.1, 0.1, 0.2, 0.1  # subtle backdrop shadow
+
+<CircularToggleButton@ToggleButton>:
+    canvas.before:
+        Color:
+            rgba: (0, 1, 0, 1) if self.state == 'down' else (0.8, 0.8, 0.8, 1)  
+        Ellipse:
+            pos: self.x, self.y
+            size: self.width, self.height
+    background_color: 0, 0, 0, 0  
+    size_hint: None, None
+    size: 50, 50  
+    
