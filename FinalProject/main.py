@@ -105,32 +105,6 @@ class PetFinderScreen(Screen):
         self.ids.main_button.text = option_text  # Update the main button's text
         self.ids.dropdown.dismiss()  # Close the dropdown
     
-
-    def populate_cards(self, search_results):
-        """Add pet cards to the carousel."""
-        carousel = self.ids.pet_carousel
-        carousel.clear_widgets()
-
-        for pet in search_results:
-            card = BoxLayout(orientation='vertical', size_hint=(None, None), size=(300, 400), padding=20, spacing=10)
-
-            # Pet name label
-            card.add_widget(Label(
-                text=f"{pet['name']}",
-                font_size=24,
-                color=(0, 0, 0, 1),
-                size_hint=(1, 0.2)
-            ))
-
-            # Pet image
-            card.add_widget(Image(
-                source=pet['image'],
-                size_hint=(1, 0.8)
-            ))
-
-            # Add the card to the carousel
-            carousel.add_widget(card)
-
     def on_search(self, search_query):
         """Search logic (mock)."""
         # Example search results
@@ -138,11 +112,16 @@ class PetFinderScreen(Screen):
             {"name": "Buddy", "image": "dog_image.jpg"},
             {"name": "Kitty", "image": "cat_image.jpg"},
         ]
-        self.populate_cards(mock_results)
+        pet_selector_screen = self.manager.get_screen("pet_selector")
+        self.manager.current = "pet_selector"
 
 
     def fetch_pets(self, query):
         pass
+
+class PetSelectorScreen(Screen):
+    pass
+            
 
 class MyApp(App):
     def build(self):
@@ -154,6 +133,7 @@ class MyApp(App):
         sm.add_widget(SignUpScreen(name="signup"))
         sm.add_widget(SignInScreen(name="signin"))
         sm.add_widget(PetFinderScreen(name="petfinder"))
+        sm.add_widget(PetSelectorScreen(name="pet_selector"))
         return sm
 
 
