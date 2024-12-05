@@ -3,7 +3,7 @@
 <SignUpScreen>:
     username_input: username
     password_input: password
-    confirm_input: confirm
+    confirm_input: confirm 
     feedback_label: feedback_label
     FloatLayout:
         Image:
@@ -81,6 +81,14 @@
             height: "60dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.12}
             on_press: app.root.current = "signin"
+        
+        # Button to PetCard Screen
+        # Back Button
+        Button:
+            text: "PetCard Screen"
+            size_hint: 0.15, 0.05
+            pos_hint: {"x": 0.03, "y": 0.9}
+            on_press: app.root.current = "petcard"
 
 <SignInScreen>:
     username_input: username
@@ -155,12 +163,6 @@
             color: 1, 0.5, 0, 1
             pos_hint: {"center_x": 0.5, "center_y": 0.9}
 
-        # Search Button
-        Button:
-            text: "Search"
-            size_hint: 0.15, 0.05
-            pos_hint: {"center_x": 0.5, "center_y": 0.4}
-            on_press: root.on_search(search_input.text)
         
         # Dog Label
         Label:
@@ -218,12 +220,6 @@
             pos_hint: {"x": 0.48, "y": 0.76}
             font_size: 20
 
-        # Swipeable Cards (Carousel)
-        Carousel:
-            id: carousel
-            direction: 'right'
-            size_hint: 0.9, 0.6
-            pos_hint: {"center_x": 0.5, "center_y": 0.4}
         
         # Dog Breed Drop Down Menu
         Button:
@@ -318,8 +314,59 @@
             size_hint: 0.5, None
             height: "40dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.48}
+        
+        # Back Button
+        Button:
+            text: "Log Out"
+            size_hint: 0.15, 0.05
+            pos_hint: {"x": 0.03, "y": 0.9}
+            on_press: app.root.current = "signin"
 
+        
+        # Search Button
+        Button:
+            text: "Search"
+            size_hint: 0.4, 0.4
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+            background_color: 1, 0, 0, 1  # Red background for visibility
+            on_press: root.on_search()
+        
 
+<PetCardScreen>:
+    FloatLayout:
+         # Background Image
+        Image:
+            source: "PetCardBg.jpg"
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {"x": 0, "y": 0}
+
+        # Main content 
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1, 1
+
+            # Scrollable page
+            ScrollView:
+                size_hint: 1, 2
+                do_scroll_x: False
+
+                GridLayout:
+                    id: card_grid
+                    cols:4
+                    spacing: dp(10)
+                    padding: dp(10)
+                    size_hint_y: None
+                    height: self.minimum_height
+
+            
+            # Back Button
+            Button:
+                text: "Back"
+                size_hint: 0.15, 0.05
+                pos_hint: {"x": 0.03, "y": 0.9}
+                on_press: app.root.current = "petfinder"
 
                 
         
@@ -327,23 +374,25 @@
 <PetCard>:
     canvas.before:
         Color:
-            rgba: 1, 1, 1, 0.25
+            rgba: 0, 0, 1, 1
         RoundedRectangle:
             pos: self.pos
             size: self.size
             radius: [10]
     BoxLayout:
         orientation: 'vertical'
-        padding: 20
-        spacing: 10
+        padding: dp(10)
+        spacing: dp(10)
+
         Label:
             text: root.name
-            font_size: 24
+            font_size: '18sp'
             size_hint_y: 0.2
-            text_size: self.width, None
             halign: 'center'
+            text_size: self.width, None
             shorten: True
             shorten_from: 'right'
+
         Image:
             source: root.image
             size_hint_y: 0.8

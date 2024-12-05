@@ -1,6 +1,7 @@
-from kivy.app import App
+from kivymd.app import MDApp
+from kivy.logger import Logger
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.image import Image
@@ -11,6 +12,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.carousel import Carousel
 from kivymd.uix.card import MDCard
+from kivymd.uix.label import MDLabel
 from kivy.effects.scroll import ScrollEffect
 from databaseconn import initialize_database, add_user, check_login
 import time, requests, sys
@@ -96,20 +98,6 @@ class PetCarousel(ScrollView):
         self.container.add_widget(card)
         self.container.width += card.width + self.container.spacing
 
-class PetCard(MDCard):
-    def __init__(self, pet_data, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = "vertical"
-        self.size_hint = (0.8, 0.8)
-        self.pos_hint = {"center_x": 0.5, "center_y": 0.5}
-        self.padding = 10
-
-        name_label = Label(text=pet_data["name"], font_size=24, size_hint_y=0.2)
-        image = Image(source=pet_data["image"], size_hint_y=0.8)
-
-        self.add_widget(name_label)
-        self.add_widget(image)
-
 class PetFinderScreen(Screen):
     """Screen for user to find pet wanted."""
 
@@ -118,7 +106,6 @@ class PetFinderScreen(Screen):
         self.carousel = PetCarousel(size_hint=(0.9, 0.6), pos_hint={'center_x': 0.5, 'center_y': 0.4})
         self.add_widget(self.carousel)
         
-
     def populate_dropdown(self):
         """Populate the dropdown menu."""
         dropdown = self.ids.dropdown
@@ -142,24 +129,12 @@ class PetFinderScreen(Screen):
             card = PetCard(pet)
             self.carousel.add_card(card)
 
-    def on_search(self, search_query):
+    def on_search(self):
         """Search logic (mock)."""
-        # Example search results
-        pet_results = self.fetch_pets(search_query)
-        if pet_results:
-            self.populate_cards(pet_results)
-        else:
-            print("No pets found.")
-
-    def format_pet_data(self, pet):
-        return {
-            "name": pet.get('name', 'N/A'),
-            "image": pet.get('large_results_photo_url', 'default_image.jpg'),
-            "breed": pet.get('breed', 'N/A'),
-            "age": pet.get('age', 'N/A'),
-            "sex": pet.get('sex', 'N/A')
-        }
-    
+        print("Search button clicked")
+        self.manager.current = "petcard"
+        
+ 
     def fetch_pets(self, query):
         BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
         API_KEY = "hg4nsv85lppeoqqixy3tnlt3k8lj6o0c"
@@ -200,8 +175,61 @@ class PetFinderScreen(Screen):
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
             return []   
-    
-class MyApp(App):
+
+
+class PetCard(MDCard):
+    name = StringProperty("")  # To hold the name of the pet
+    image = StringProperty("")  # To hold the image path
+
+    def __init__(self, pet_data, **kwargs):
+        super().__init__(**kwargs)
+        self.name = pet_data.get("name", "Unknown")  # Set default name if not provided
+        self.image = pet_data.get("image", "")  # Set default image if not provided
+        print("Image path:", self.image)  # Print the image path
+        # Add an Image widget to the MDCard
+        image_widget = Image(source=self.image, allow_stretch=True)
+        self.add_widget(image_widget)
+
+        # Add a Label widget to display the pet's name
+        label_widget = Label(text=self.name, font_size=20)
+        self.add_widget(label_widget)
+
+class PetCardScreen(Screen):
+    def on_enter(self):
+        # example data for testing
+        sample_pets = [
+            {"name": "Bella", "image": "bella.jpg"}
+            
+            # Add more sample pet data as needed
+        ]
+
+        self.populate_cards(sample_pets)
+        # Ensure card_grid exists
+        if not hasattr(self.ids, "card_grid"):
+            print("Error: card_grid not found in ids")
+            return
+
+        # Add blank cards or test data
+        # for _ in range(16):
+        #     card = PetCard()  # Use default data
+        #     self.ids.card_grid.add_widget(card)
+
+    def populate_cards(self, pets):
+        card_grid = self.ids.card_grid
+        card_grid.clear_widgets()  # Clear existing cards
+
+        print("Pets:", pets)  # Check if pets list is populated
+
+        for pet in pets:
+            print("Pet:", pet)  # Check if pet data is correct
+            card = PetCard(pet_data=pet)
+            card_grid.add_widget(card)
+
+
+
+
+
+class MyApp(MDApp):
     def build(self):
         # Initialize the database
         initialize_database()
@@ -211,6 +239,8 @@ class MyApp(App):
         sm.add_widget(SignUpScreen(name="signup"))
         sm.add_widget(SignInScreen(name="signin"))
         sm.add_widget(PetFinderScreen(name="petfinder"))
+        sm.add_widget(PetCardScreen(name="petcard"))
+        
         return sm
 
 
