@@ -7,6 +7,7 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
+from kivy.metrics import dp
 from kivy.uix.dropdown import DropDown
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
@@ -178,21 +179,46 @@ class PetFinderScreen(Screen):
 
 
 class PetCard(MDCard):
-    name = StringProperty("")  # To hold the name of the pet
-    image = StringProperty("")  # To hold the image path
+    name = StringProperty("")
+    image = StringProperty("")
 
     def __init__(self, pet_data, **kwargs):
         super().__init__(**kwargs)
-        self.name = pet_data.get("name", "Unknown")  # Set default name if not provided
-        self.image = pet_data.get("image", "")  # Set default image if not provided
-        print("Image path:", self.image)  # Print the image path
-        # Add an Image widget to the MDCard
-        image_widget = Image(source=self.image, allow_stretch=True)
-        self.add_widget(image_widget)
+        self.name = pet_data.get("name", "Unknown")  # Default name if not provided
+        self.image = pet_data.get("image", "")  # Default image if not provided
 
-        # Add a Label widget to display the pet's name
-        label_widget = Label(text=self.name, font_size=20)
-        self.add_widget(label_widget)
+        # Debug image path
+        print("Image path:", self.image)
+
+        # Set MDCard properties
+        self.orientation = "vertical"
+        self.padding = dp(10)
+        self.size_hint = (None, None)
+        self.size = (dp(150), dp(200))  # Fixed size for the card
+        self.radius = [10]
+
+        # Create a BoxLayout to hold the image and label
+        content = BoxLayout(orientation="vertical", spacing=dp(10))
+        
+        # Add the Image widget
+        image_widget = Image(
+            source=self.image,
+            allow_stretch=True,
+            size_hint_y=0.7  # Image takes 70% of the card height
+        )
+        content.add_widget(image_widget)
+
+        # Add the Label widget
+        label_widget = Label(
+            text=self.name,
+            font_size=dp(16),
+            halign="center",
+            size_hint_y=0.3  # Label takes 30% of the card height
+        )
+        content.add_widget(label_widget)
+
+        # Add the content to the card
+        self.add_widget(content)
 
 class PetCardScreen(Screen):
     def on_enter(self):
@@ -223,6 +249,7 @@ class PetCardScreen(Screen):
         for pet in pets:
             print("Pet:", pet)  # Check if pet data is correct
             card = PetCard(pet_data=pet)
+            print("Card layout:", card.layout)
             card_grid.add_widget(card)
 
 

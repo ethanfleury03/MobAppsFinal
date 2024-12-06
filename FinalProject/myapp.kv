@@ -368,9 +368,7 @@
                 pos_hint: {"x": 0.03, "y": 0.9}
                 on_press: app.root.current = "petfinder"
 
-                
-        
-
+                       
 <PetCard>:
     canvas.before:
         Color:
@@ -393,9 +391,19 @@
             shorten: True
             shorten_from: 'right'
 
-        Image:
-            source: root.image
-            size_hint_y: 0.8
+        ScrollView:
+            size_hint_y: None
+            height: dp(400)
+            on_touch_up: self.scroll_y = self.scroll_y
+
+            Image:
+                source: root.image
+                allow_stretch: True
+                size_hint_y: None
+                height: dp(800)
+   
+    
+
 
 <PetCarousel>:
     canvas.before:
