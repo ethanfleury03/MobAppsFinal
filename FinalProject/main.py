@@ -129,7 +129,6 @@ class PetFinderScreen(Screen):
         petcard_screen.age_range = age_range
         self.manager.current = "petcard"
       
-
 class PetCard(MDCard):
     pet_name = StringProperty("")
     pet_image = StringProperty("")
@@ -143,11 +142,12 @@ class PetCard(MDCard):
         self.padding = dp(10)
         self.spacing = dp(5)
         self.size_hint = (None, None)
-        self.size = (dp(150), dp(200))  # Fixed size for the card
+        self.size = (dp(150), dp(200)) 
         self.radius = [10]
         self.elevation = 2
 
-        self.pet_name = pet_data.get('name', 'Unknown')
+        name = pet_data.get('name')
+        self.pet_name = name if name and not name.isdigit() else "No name"
         self.pet_image = pet_data.get('image_url', '')
         self.pet_age = pet_data.get('age', 'Unknown')
         self.pet_sex = pet_data.get('sex', 'Unknown')
@@ -245,6 +245,7 @@ class PetCardScreen(Screen):
         species = self.species
         sex = self.sex
         age_range = self.age_range
+        
 
         start_number = 1
         end_number = 8
@@ -292,7 +293,6 @@ class MyApp(MDApp):
         sm.add_widget(PetFinderScreen(name="petfinder"))
         sm.add_widget(PetCardScreen(name="petcard"))
         return sm
-
 
 if __name__ == "__main__":
     MyApp().run()
