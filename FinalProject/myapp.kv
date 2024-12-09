@@ -82,14 +82,6 @@
             pos_hint: {"center_x": 0.5, "center_y": 0.12}
             on_press: app.root.current = "signin"
         
-        # Button to PetCard Screen
-        # Back Button
-        Button:
-            text: "PetCard Screen"
-            size_hint: 0.15, 0.05
-            pos_hint: {"x": 0.03, "y": 0.9}
-            on_press: app.root.current = "petcard"
-
 <SignInScreen>:
     username_input: username
     password_input: password
@@ -338,30 +330,29 @@
     # Return to previous screen button 
         Button:
             text: "Back"
-            size_hint: 0.15, 0.05
-            pos_hint: {"x": 0.05, "y": 0.9}
+            size_hint: 0.1, 0.05
+            pos_hint: {"x": 0.03, "y": 0.9}
             on_press: app.root.current = "petfinder"
-
-        ScrollableCardLayout:
-            id: scrollable_layout
-            pos_hint: {"x": 0, "y": 0}
-            size_hint: 1, 0.85
-
-
-    
-
-
+        GridLayout:
+            id: card_layout  # Container for the card
+            cols: 4
+            rows: 2
+            size_hint: None, None
+            pos_hint: {"center_x": 0.9, "center_y": 0.3}
+            size: "1200dp", "800dp"  # Set size for the card layout
+            padding: dp(10)
+            spacing: dp(10)
 
 <PetCard>:
     BoxLayout:
         size_hint_y: 0.6
         Image:
-            source: root.image
+            source: root.make_background(root.pet_location)
             allow_stretch: True
             keep_ratio: True
 
     MDLabel:
-        text: root.name
+        text: root.pet_name
         halign: "center"
         size_hint_y: 0.15
         font_style: "H6"
@@ -374,21 +365,24 @@
         MDLabel:
             text: "Age:"
             font_style: "Caption"
+            font_size: 14
         MDLabel:
-            text: "2"  # Replace with actual age
-
+            text: root.pet_age  # Replace with actual age
+            font_size: 14
         MDLabel:
             text: "Sex:"
             font_style: "Caption"
+            font_size: 14
         MDLabel:
-            text: "M"  # Replace with actual sex
-
+            text: root.pet_sex  # Replace with actual sex
+            font_size: 14
         MDLabel:
             text: "Location:"
             font_style: "Caption"
+            font_size: 10
         MDLabel:
-            text: "Niagara Falls, NY"  # Replace with actual location
-
+            text: root.pet_location  # Replace with actual location
+            font_size: 14
 <CircularToggleButton@ToggleButton>:
     canvas.before:
         Color:

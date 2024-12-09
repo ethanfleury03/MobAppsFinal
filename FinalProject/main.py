@@ -16,7 +16,16 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.label import MDLabel
 from kivy.effects.scroll import ScrollEffect
 from databaseconn import initialize_database, add_user, check_login
-import time, requests, sys
+import folium
+from geopy.geocoders import Nominatim
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+import time, requests, sys, os
 
 # Ethan and Adam
 class SignUpScreen(Screen):
@@ -138,6 +147,76 @@ class PetCard(MDCard):
         self.radius = [10]
         self.elevation = 2
 
+        self.pet_name = pet_data.get('name', 'Unknown')
+        self.pet_image = pet_data.get('image_url', '')
+        self.pet_age = pet_data.get('age', 'Unknown')
+        self.pet_sex = pet_data.get('sex', 'Unknown')
+        self.pet_location = pet_data.get('location', 'Unknown')
+
+    def make_background(self, zip):
+        maps_dir = "maps"
+    
+        # Ensure the 'maps' directory exists
+        if not os.path.exists(maps_dir):
+            os.makedirs(maps_dir)
+        
+        # Geocode the ZIP code
+        geolocator = Nominatim(user_agent="petfinder")
+        location = geolocator.geocode(zip)
+        
+        if not location:
+            print(f"Invalid ZIP code: {zip}")
+            return "default_image.png"  # Fallback to a default image
+        
+        lat, lon = location.latitude, location.longitude
+        
+        # Create a Folium map centered at the location
+        m = folium.Map(location=[lat, lon], zoom_start=15)
+        folium.Marker(location=[lat, lon], popup=self.pet_name).add_to(m)
+        
+        # Save the map as an HTML file
+        map_file = f"maps/{self.pet_name}.html"
+        m.save(map_file)
+
+        # Convert the HTML map to an image
+        image_file = f"maps/{self.pet_name}.png"
+        
+        # Ensure the map file is saved and exists
+        if not os.path.exists(map_file):
+            print(f"Error: Map file not found at {map_file}")
+            return "default_image.png"
+        
+        # Setup Selenium WebDriver with WebDriverManager
+        options = Options()
+        options.headless = True  
+        options.add_argument('--disable-gpu') 
+        options.add_argument('--no-sandbox')  
+        options.add_argument('--remote-debugging-port=9222')
+        
+        # Use WebDriverManager to automatically download and setup ChromeDriver
+        service = Service(ChromeDriverManager().install())  # WebDriverManager handles the chromedriver
+        with webdriver.Chrome(service=service, options=options) as driver:
+            # Use absolute path for the map HTML file
+            absolute_map_path = os.path.abspath(map_file)
+            file_url = f"file:///{absolute_map_path}"
+
+            # Load the map HTML file
+            driver.get(file_url)
+            try:
+                # Wait until a marker is visible on the map (can be any element you want to wait for)
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, 'leaflet-marker-icon'))  # Wait for marker to load
+                )
+            except Exception as e:
+                print(f"Error waiting for the map to load: {e}")
+                return "default_image.png"
+            
+            # Save a screenshot of the map as an image
+            driver.save_screenshot(image_file)
+        
+        print(f"Map image saved to {image_file}")
+        return image_file
+    
 class PetCardScreen(Screen):
     city_or_zip = StringProperty("")
     geo_range = StringProperty("")
@@ -150,12 +229,12 @@ class PetCardScreen(Screen):
         self.populate_cards(pets)
 
     def populate_cards(self, pets):
-        scrollable_layout = self.ids.scrollable_layout
-        scrollable_layout.clear_cards()
+        layout = self.ids.card_layout 
+        layout.clear_widgets()
 
         for pet in pets:
             card = PetCard(pet_data=pet)
-            scrollable_layout.add_card(card)
+            layout.add_widget(card)
 
     def fetch_pets(self):
         BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
@@ -165,11 +244,10 @@ class PetCardScreen(Screen):
         geo_range = self.geo_range
         species = self.species
         sex = self.sex
-        # breed = self.breed
         age_range = self.age_range
 
         start_number = 1
-        end_number = 30
+        end_number = 8
 
         url = f"{BASE_URL}?key={API_KEY}&v=3&output=json&city_or_zip={city_or_zip}&geo_range={geo_range}&species={species}&sex={sex}&age={age_range}&start_number={start_number}&end_number={end_number}"
         
@@ -183,15 +261,16 @@ class PetCardScreen(Screen):
             print("Response content:", response.text)
             pets_data = response.json()
             print(f"Response Data: {pets_data}")
-            if 'pet' in pets_data:
-                return [self.format_pet_data(pet) for pet in pets_data['pet']]
+            if pets_data.get("status") == "ok" and "pets" in pets_data:
+                pets = pets_data["pets"]
+                return [self.format_pet_data(pet) for pet in pets]  # Format pet data to be used
             else:
                 print("No pets found in the response")
                 return []
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
             return []
-        
+
     def format_pet_data(self, pet):
         return {
             'image_url': pet.get('large_results_photo_url', ''),
@@ -200,27 +279,6 @@ class PetCardScreen(Screen):
             'sex': pet.get('sex', ''),
             'location': f"{pet.get('addr_city', '')}, {pet.get('addr_state_code', '')}"
         }
-
-
-class ScrollableCardLayout(ScrollView):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        self.card_grid = GridLayout(
-            cols=4,
-            spacing=dp(10),
-            padding=dp(10),
-            size_hint_y=None,
-        )
-        self.card_grid.bind(minimum_height=self.card_grid.setter('height'))
-        self.add_widget(self.card_grid)
-
-    def add_card(self, card):
-        self.card_grid.add_widget(card)
-    
-    def clear_cards(self):
-        self.card_grid.clear_widgets()
-
 
 class MyApp(MDApp):
     def build(self):
