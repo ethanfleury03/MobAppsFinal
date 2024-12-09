@@ -193,20 +193,25 @@
 
         # Dog Button
         CircularToggleButton:
+            id: dog_toggle
             group: "group_1"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.33, "y": 0.81}
             font_size: 20
+            on_press: root.update_breed_dropdown()
 
         # Cat Button
         CircularToggleButton:
+            id: cat_toggle
             group: "group_1"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.33, "y": 0.76}
             font_size: 20
+            on_press: root.update_breed_dropdown()
         
         # Male Button
         CircularToggleButton:
+            id: male_toggle
             group: "group_male"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.81}
@@ -218,13 +223,6 @@
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.76}
             font_size: 20
-
-        # Swipeable Cards (Carousel)
-        Carousel:
-            id: carousel
-            direction: 'right'
-            size_hint: 0.9, 0.6
-            pos_hint: {"center_x": 0.5, "center_y": 0.4}
         
         # Dog Breed Drop Down Menu
         Button:
@@ -233,19 +231,8 @@
             size_hint: None, None
             size: 200, 50
             pos_hint: {"x": 0.6, "y": 0.8}
-            on_release: dropdown.open(self)
-
-        DropDown:
-            id: dropdown
-            ScrollView:
-                size_hint: 1, None
-                height: 200  
-
-                GridLayout:
-                    id: options_grid
-                    cols: 1
-                    size_hint_y: None
-                    height: self.minimum_height
+            on_release: root.update_breed_dropdown()
+           
 
         # Age Range LABEL
         Label:
@@ -284,6 +271,7 @@
 
         # 0-2 Radio Button
         CircularToggleButton:
+            id: age_0_2_toggle
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.68}
@@ -291,6 +279,7 @@
 
         # 3-7 Radio Button
         CircularToggleButton:
+            id: age_3_7_toggle
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.63}
@@ -298,6 +287,7 @@
 
         # 8+ Radio Button
         CircularToggleButton:
+            id: age_8plus_toggle
             group: "group_age"
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.48, "y": 0.58}
@@ -310,20 +300,46 @@
             font_size: 28
             pos_hint: {"center_x": 0.5, "center_y": 0.55}
 
-        
+        # Zip label
+        Label:
+            text: "Please enter your city or zip code"
+            color: 0, 0, 0, 100
+            font_size: 28
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
+        # Zip input
+        TextInput:
+            id: city_or_zipid
+            hint_text: "Zip or City"
+            font_size: 28
+            size_hint: 0.5, None
+            height: "40dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.35}
+
         # Radius Text Input
         TextInput:
+            id: radius_input
             hint_text: "Radius (in miles)"
             font_size: 28
             size_hint: 0.5, None
             height: "40dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.48}
 
+        #Search Button
+        Button:
+            id: search_button
+            text: "Search"
+            size_hint: None, None
+            size: 200, 50
+            pos_hint: {"center_x": 0.5, "center_y": 0.29}
+            on_release: root.on_search()
+
+            
+
 <PetCardScreen>:
     FloatLayout:
     # White background image
     Image:
-        source: "white_background.jpg"
+        source: "PetCardBg.jpg"
         allow_stretch: True
         keep_ratio: False
         size_hint: 1, 1
@@ -336,31 +352,42 @@
         pos_hint: {"x": 0.05, "y": 0.9}
         on_press: app.root.current = "petfinder"
 
+    ScrollableCardLayout:
+        id: scrollable_layout
+
+
+    
+<ScrollableCardLayout>:
+    ScrollView:
+        GridLayout:
+            id: card_grid
+            cols: 4
+            spacing: dp(10)
+            padding: dp(10)
+            size_hint_y: None
+            height: self.minimum_height
+
 
 <PetCard>:
-    canvas.before:
-        Color:
-            rgba: 0, 0, 1, 1
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [10]
-    BoxLayout:
-        orientation: 'vertical'
-        padding: dp(10)
-        spacing: dp(10)
+    orientation: "vertical"
+    size_hint: None, None
+    size: dp(150), dp(200)
+    padding: dp(10)
+    spacing: dp(5)
+    md_bg_color: 1, 1, 1, 1
+    radius: [10]
 
-        Label:
-            text: root.name
-            font_size: '18sp'
-            size_hint_y: 0.2
-            halign: 'center'
-            text_size: self.width, None
-            shorten: True
-            shorten_from: 'right'
-        Image:
-            source: root.image
-            size_hint_y: 0.8
+    Image:
+        source: root.image
+        size_hint_y: 0.7
+        allow_stretch: True
+        keep_ratio: True
+
+    MDLabel:
+        text: root.name
+        halign: "center"
+        size_hint_y: 0.3
+        font_style: "Body1"
 
 
 <CircularToggleButton@ToggleButton>:

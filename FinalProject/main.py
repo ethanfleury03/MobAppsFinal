@@ -90,12 +90,11 @@ class PetFinderScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.dropdown = DropDown()
         
+    def update_breed_dropdown(self):
+        self.dropdown.clear_widgets()
         
-    def populate_dropdown(self):
-        """Populate the dropdown menu."""
-        dropdown = self.ids.dropdown
-        grid = self.ids.options_grid  # Reference the GridLayout inside the dropdown
         dog_breeds = [
     "Affenpinscher", "Afghan Hound", "African Hunting Dog", "Airedale Terrier",
     "Akita", "Alaskan Malamute", "American Bulldog", "American Cocker Spaniel",
@@ -221,15 +220,21 @@ class PetFinderScreen(Screen):
 ]
 
         if self.ids.dog_toggle.state == "down":
-            self.items = dog_breeds
+            items = dog_breeds
         else:
-            self.items = cat_breeds
+            items = cat_breeds
 
-        for item in self.items:
+        for item in items:
             btn = Button(text=item, size_hint_y=None, height=40)
             btn.bind(on_release=lambda btn, item=item: self.select_breed_option(item))
-            grid.add_widget(btn)
-        dropdown.open(self.ids.main_button)
+            self.dropdown.add_widget(btn)
+
+        self.dropdown.open(self.ids.main_button)
+
+    def select_item(self, text):
+        # Update the button text with the selected item
+        self.ids.main_button.text = text
+        self.dropdown.dismiss()
 
     def select_breed_option(self, option_text):
         """Handle selecting a Breed option from the dropdown."""
@@ -241,51 +246,36 @@ class PetFinderScreen(Screen):
 
     def on_search(self):
         """Search logic (mock)."""
-        print("Search button clicked")
-        self.manager.current = "petcard"
-        
- 
-    def fetch_pets(self, query):
-        BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
-        API_KEY = "hg4nsv85lppeoqqixy3tnlt3k8lj6o0c"
-
-        city_or_zip = query
-        geo_range = self.radius_input.text or "50"
+        city_or_zip = self.ids.city_or_zipid.text
+        geo_range = self.ids.radius_input.text
         species = "dog" if self.ids.dog_toggle.state == "down" else "cat"
-        sex = "m" if self.ids.male_toggle.state == "down" else "f" if self.ids.female_toggle.state == "down" else ""
+        sex = "m" if self.ids.male_toggle.state == "down" else "f" 
         breed = self.ids.main_button.text if self.ids.main_button.text != "Breed" else ""
-
+        age_range = ""
         if self.ids.age_0_2_toggle.state == "down":
             age_range = "0-2"
         elif self.ids.age_3_7_toggle.state == "down":
             age_range = "3-7"
         elif self.ids.age_8plus_toggle.state == "down":
             age_range = "8+"
-        else:
-            age_range = ""
 
-        start_number = 1
-        end_number = 10
+        print(f"Search parameters:")
+        print(f"  City/Zip: {city_or_zip}")
+        print(f"  Radius: {geo_range} miles")
+        print(f"  Species: {species}")
+        print(f"  Sex: {sex}")
+        print(f"  Breed: {breed}")
+        print(f"  Age Range: {age_range}")
 
-        url = f"{BASE_URL}?key={API_KEY}&v=3&output=json&city_or_zip={city_or_zip}&geo_range={geo_range}&species={species}&breed={breed}&sex={sex}&age={age_range}&start_number={start_number}&end_number={end_number}"
-        
-        headers = {
-            'Accept': 'application/json; charset=UTF8'
-        }
-        
-        try:
-            response = requests.get(url, headers=headers)
-            response.raise_for_status()
-            pets_data = response.json()
-            if 'pet' in pets_data:
-                return [self.format_pet_data(pet) for pet in pets_data['pet']]
-            else:
-                print("No pets found in the response")
-                return []
-        except requests.exceptions.RequestException as e:
-            print(f"Error fetching data: {e}")
-            return []   
-
+        petcard_screen = self.manager.get_screen('petcard')
+        petcard_screen.city_or_zip = city_or_zip
+        petcard_screen.geo_range = geo_range
+        petcard_screen.species = species
+        petcard_screen.sex = sex
+        petcard_screen.breed = breed
+        petcard_screen.age_range = age_range
+        self.manager.current = "petcard"
+      
 
 class PetCard(MDCard):
     name = StringProperty("")
@@ -330,39 +320,60 @@ class PetCard(MDCard):
         self.add_widget(content)
 
 class PetCardScreen(Screen):
+    city_or_zip = StringProperty("")
+    geo_range = StringProperty("")
+    species = StringProperty("")
+    sex = StringProperty("")
+    breed = StringProperty("")
+    age_range = StringProperty("")
+
     def on_enter(self):
-        # example data for testing
-        sample_pets = [
-            {"name": "Bella", "image": "bella.jpg"}
-            
-            # Add more sample pet data as needed
-        ]
-
-        self.populate_cards(sample_pets)
-        # Ensure card_grid exists
-        if not hasattr(self.ids, "card_grid"):
-            print("Error: card_grid not found in ids")
-            return
-
-        # Add blank cards or test data
-        # for _ in range(16):
-        #     card = PetCard()  # Use default data
-        #     self.ids.card_grid.add_widget(card)
+        self.populate_cards(self.fetch_pets())
 
     def populate_cards(self, pets):
-        card_grid = self.ids.card_grid
-        card_grid.clear_widgets()  # Clear existing cards
-
-        print("Pets:", pets)  # Check if pets list is populated
-
+        scrollable_layout = self.ids.scrollable_layout
+        scrollable_layout.ids.card_grid.clear_widgets()
         for pet in pets:
-            print("Pet:", pet)  # Check if pet data is correct
             card = PetCard(pet_data=pet)
-            print("Card layout:", card.layout)
-            card_grid.add_widget(card)
+            scrollable_layout.add_card(card)
+
+    def fetch_pets(self):
+        BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
+        API_KEY = "hg4nsv85lppeoqqixy3tnlt3k8lj6o0c"
+
+        city_or_zip = self.city_or_zip
+        geo_range = self.geo_range
+        species = self.species
+        sex = self.sex
+        breed = self.breed
+        age_range = self.age_range
+
+        start_number = 1
+        end_number = 10
+
+        url = f"{BASE_URL}?key={API_KEY}&v=3&output=json&city_or_zip={city_or_zip}&geo_range={geo_range}&species={species}&breed={breed}&sex={sex}&age={age_range}&start_number={start_number}&end_number={end_number}"
+        
+        headers = {
+            'Accept': 'application/json; charset=UTF8'
+        }
+        
+        try:
+            response = requests.get(url, headers=headers)
+            response.raise_for_status()
+            pets_data = response.json()
+            if 'pet' in pets_data:
+                return [self.format_pet_data(pet) for pet in pets_data['pet']]
+            else:
+                print("No pets found in the response")
+                return []
+        except requests.exceptions.RequestException as e:
+            print(f"Error fetching data: {e}")
+            return []
 
 
-
+class ScrollableCardLayout(BoxLayout):
+    def add_card(self, card):
+        self.ids.card_grid.add_widget(card)
 
 
 class MyApp(MDApp):
