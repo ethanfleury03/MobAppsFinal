@@ -333,6 +333,8 @@
             pos_hint: {"center_x": 0.5, "center_y": 0.29}
             on_release: root.on_search()
 
+        
+
             
 
 <PetCardScreen>:
@@ -354,40 +356,41 @@
 
     ScrollableCardLayout:
         id: scrollable_layout
+        pos_hint: {"x": 0, "y": 0}
+        size_hint: 1, 0.85
 
 
     
 <ScrollableCardLayout>:
-    ScrollView:
-        GridLayout:
-            id: card_grid
-            cols: 4
-            spacing: dp(10)
-            padding: dp(10)
-            size_hint_y: None
-            height: self.minimum_height
+    GridLayout:
+        id: card_grid
+        cols: 4
+        spacing: dp(10)
+        padding: dp(10)
+        size_hint_y: None
+        height: self.minimum_height
 
 
 <PetCard>:
-    orientation: "vertical"
+    orientation: "verticle"
+    padding: dp(10)
     size_hint: None, None
     size: dp(150), dp(200)
-    padding: dp(10)
-    spacing: dp(5)
-    md_bg_color: 1, 1, 1, 1
     radius: [10]
 
-    Image:
-        source: root.image
-        size_hint_y: 0.7
-        allow_stretch: True
-        keep_ratio: True
+    BoxLayout:
+        orientation: "verticle"
+        spacing: dp(10)
 
-    MDLabel:
-        text: root.name
-        halign: "center"
-        size_hint_y: 0.3
-        font_style: "Body1"
+        Image:
+            source: root.image
+            allow_stretch: True
+            size_hint_y: 0.7
+        Label:
+            text: root.name
+            font_size: dp(16)
+            halign: "center"
+            size_hint_y: 0.3
 
 
 <CircularToggleButton@ToggleButton>:

@@ -319,7 +319,7 @@ class PetCard(MDCard):
         # Add the content to the card
         self.add_widget(content)
 
-class PetCardScreen(Screen):
+class PetCardScreen(Screen ):
     city_or_zip = StringProperty("")
     geo_range = StringProperty("")
     species = StringProperty("")
@@ -328,14 +328,17 @@ class PetCardScreen(Screen):
     age_range = StringProperty("")
 
     def on_enter(self):
-        self.populate_cards(self.fetch_pets())
+        pets = self.fetch_pets
+        self.populate_cards(pets)
 
     def populate_cards(self, pets):
+        print("IDs:", self.ids)  # This will show all available ids
+        print("Scrollable Layout:", self.ids.scrollable_layout)
         scrollable_layout = self.ids.scrollable_layout
-        scrollable_layout.ids.card_grid.clear_widgets()
+        scrollable_layout.card_grid.clear_widget(card)
         for pet in pets:
             card = PetCard(pet_data=pet)
-            scrollable_layout.add_card(card)
+            scrollable_layout.card_grid.add_widget(card)
 
     def fetch_pets(self):
         BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
@@ -371,9 +374,24 @@ class PetCardScreen(Screen):
             return []
 
 
-class ScrollableCardLayout(BoxLayout):
+class ScrollableCardLayout(ScrollView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.card_grid = GridLayout(
+            cols=4,
+            spacing=dp(10),
+            padding=dp(10),
+            size_hint_y=None,
+        )
+        self.card_grid.bind(minimum_height=self.card_grid.setter('height'))
+        self.add_widget(self.card_grid)
+
     def add_card(self, card):
-        self.ids.card_grid.add_widget(card)
+        self.card_grid.add_widget(card)
+    
+    def clear_cards(self):
+        self.card_grid.clear_widgets()
 
 
 class MyApp(MDApp):
