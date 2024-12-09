@@ -229,6 +229,7 @@ class PetFinderScreen(Screen):
             btn = Button(text=item, size_hint_y=None, height=40)
             btn.bind(on_release=lambda btn, item=item: self.select_breed_option(item))
             grid.add_widget(btn)
+        dropdown.open(self.ids.main_button)
 
     def select_breed_option(self, option_text):
         """Handle selecting a Breed option from the dropdown."""

@@ -321,10 +321,21 @@
 
 <PetCardScreen>:
     FloatLayout:
-        
+    # White background image
+    Image:
+        source: "white_background.jpg"
+        allow_stretch: True
+        keep_ratio: False
+        size_hint: 1, 1
+        pos_hint: {"x":0, "y": 0}
+    
+    # Return to previous screen button 
+    Button:
+        text: "Back"
+        size_hint: 0.15, 0.05
+        pos_hint: {"x": 0.05, "y": 0.9}
+        on_press: app.root.current = "petfinder"
 
-                
-        
 
 <PetCard>:
     canvas.before:
@@ -347,19 +358,11 @@
             text_size: self.width, None
             shorten: True
             shorten_from: 'right'
+        Image:
+            source: root.image
+            size_hint_y: 0.8
 
-        ScrollView:
-            size_hint_y: None
-            height: dp(400)
-            on_touch_up: self.scroll_y = self.scroll_y
 
-            Image:
-                source: root.image
-                allow_stretch: True
-                size_hint_y: None
-                height: dp(800)
-   
-    
 <CircularToggleButton@ToggleButton>:
     canvas.before:
         Color:
