@@ -268,6 +268,7 @@ class MyApp(MDApp):
         sm.add_widget(PetFinderScreen(name="petfinder"))
         sm.add_widget(PetCardScreen(name="petcard"))
         
+        sm.add_widget(PetSelectorScreen(name="pet_selector"))
         return sm
 
 

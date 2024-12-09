@@ -220,6 +220,12 @@
             pos_hint: {"x": 0.48, "y": 0.76}
             font_size: 20
 
+        # Swipeable Cards (Carousel)
+        Carousel:
+            id: carousel
+            direction: 'right'
+            size_hint: 0.9, 0.6
+            pos_hint: {"center_x": 0.5, "center_y": 0.4}
         
         # Dog Breed Drop Down Menu
         Button:
@@ -308,67 +314,17 @@
         
         # Radius Text Input
         TextInput:
-            id: radius
             hint_text: "Radius (in miles)"
             font_size: 28
             size_hint: 0.5, None
             height: "40dp"
             pos_hint: {"center_x": 0.5, "center_y": 0.48}
-        
-        # Back Button
-        Button:
-            text: "Log Out"
-            size_hint: 0.15, 0.05
-            pos_hint: {"x": 0.03, "y": 0.9}
-            on_press: app.root.current = "signin"
 
-        
-        # Search Button
-        Button:
-            text: "Search"
-            size_hint: 0.4, 0.4
-            pos_hint: {"center_x": 0.5, "center_y": 0.4}
-            background_color: 1, 0, 0, 1  # Red background for visibility
-            on_press: root.on_search()
+
+
+                
         
 
-<PetCardScreen>:
-    FloatLayout:
-         # Background Image
-        Image:
-            source: "PetCardBg.jpg"
-            allow_stretch: True
-            keep_ratio: False
-            size_hint: 1, 1
-            pos_hint: {"x": 0, "y": 0}
-
-        # Main content 
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: 1, 1
-
-            # Scrollable page
-            ScrollView:
-                size_hint: 1, 2
-                do_scroll_x: False
-
-                GridLayout:
-                    id: card_grid
-                    cols:4
-                    spacing: dp(10)
-                    padding: dp(10)
-                    size_hint_y: None
-                    height: self.minimum_height
-
-            
-            # Back Button
-            Button:
-                text: "Back"
-                size_hint: 0.15, 0.05
-                pos_hint: {"x": 0.03, "y": 0.9}
-                on_press: app.root.current = "petfinder"
-
-                       
 <PetCard>:
     canvas.before:
         Color:
