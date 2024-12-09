@@ -85,32 +85,145 @@ class SignInScreen(Screen):
             self.feedback_label.text = "Invalid username or password."
             self.feedback_label.color = (1, 0, 0, 1)  # Red
 
-class PetCarousel(ScrollView):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.effect_cls = ScrollEffect
-        self.scroll_type = ['bars', 'content']
-        self.bar_width = 0
-        self.scroll_wheel_distance = 100
-        self.container = BoxLayout(orientation='horizontal', size_hint_x=None, spacing=20)
-        self.add_widget(self.container)
-
-    def add_card(self, card):
-        self.container.add_widget(card)
-        self.container.width += card.width + self.container.spacing
-
 class PetFinderScreen(Screen):
     """Screen for user to find pet wanted."""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.carousel = PetCarousel(size_hint=(0.9, 0.6), pos_hint={'center_x': 0.5, 'center_y': 0.4})
-        self.add_widget(self.carousel)
+        
         
     def populate_dropdown(self):
         """Populate the dropdown menu."""
         dropdown = self.ids.dropdown
         grid = self.ids.options_grid  # Reference the GridLayout inside the dropdown
+        dog_breeds = [
+    "Affenpinscher", "Afghan Hound", "African Hunting Dog", "Airedale Terrier",
+    "Akita", "Alaskan Malamute", "American Bulldog", "American Cocker Spaniel",
+    "American Pit Bull Terrier", "American Staffordshire Terrier", "Anatolian Shepherd Dog",
+    "Aspin Dog", "Australian Cattle Dog", "Australian Kelpie", "Australian Shepherd",
+    "Australian Silky Terrier", "Australian Stumpy Tail Cattle Dog", "Australian Terrier",
+    "Basenji", "Basset Fauve De Bretagne", "Basset Hound", "Beagle", "Bearded Collie",
+    "Bedlington Terrier", "Belgian Malinois", "Belgian Shepherd", "Belgian Sheepdog",
+    "Belgian Tervuren", "Bergamasco Sheepdog", "Bernese Mountain Dog", "Bichon Frise",
+    "Black and Tan Coonhound", "Black Russian Terrier", "Bloodhound", "Border Collie",
+    "Border Terrier", "Borzoi", "Boston Terrier", "Bouvier Des Flandres", "Boxer",
+    "Boykin Spaniel", "Bracco Italiano", "Briard", "British Bulldog", "Brittany",
+    "Brussels Griffon", "Bull Terrier", "Bulldog", "Bullmastiff", "Cairn Terrier",
+    "Cavalier King Charles Spaniel", "Chesapeake Bay Retriever", "Chihuahua",
+    "Chinese Crested Dog", "Chinese Shar-Pei", "Chow Chow", "Clumber Spaniel",
+    "Cocker Spaniel", "Collie", "Coonhound", "Corgi (Cardigan)", "Corgi (Pembroke)",
+    "Curly Coated Retriever", "Dachshund", "Dalmatian", "Dandie Dinmont Terrier",
+    "Danish Spitz", "Danish–Swedish Farmdog", "Deerhound", "Dikkulak", "Dingo",
+    "Dobermann", "Dogo Argentino", "Dogo Sardesco", "Dogue Brasileiro",
+    "Dogue de Bordeaux", "Donggyeongi", "Drentse Patrijshond", "Drever", "Dunker",
+    "Dutch Shepherd", "Dutch Smoushond", "East European Shepherd",
+    "East Siberian Laika", "Ecuadorian Hairless Dog", "English Cocker Spaniel",
+    "English Foxhound", "English Mastiff", "English Setter", "English Shepherd",
+    "English Springer Spaniel", "English Toy Terrier (Black & Tan)",
+    "Entlebucher Mountain Dog", "Erbi Txakur", "Estonian Hound",
+    "Estrela Mountain Dog", "Eurasier", "Faroese Sheepdog", "Field Spaniel",
+    "Fila Brasileiro", "Finnish Hound", "Finnish Lapphund", "Finnish Spitz",
+    "Flat-coated Retriever", "Florida Brown Dog", "French Bulldog", "French Spaniel",
+    "Galgo Español", "Gascon Saintongeois", "Gaucho sheepdog", "German Shepherd",
+    "German Short-Haired Pointer", "German Wirehaired Pointer", "Golden Retriever",
+    "Gordon Setter", "Great Dane", "Greyhound", "Griffon Bruxellois", "Hungarian Vizsla",
+    "Irish Setter", "Irish Terrier", "Irish Water Spaniel", "Irish Wolfhound",
+    "Italian Greyhound", "Jack Russell", "Japanese Chin", "Japanese Spitz", "Keeshond",
+    "King Charles Spaniel", "Labrador", "Labrador Retriever", "Lagotto Romagnolo",
+    "Lài", "Lakeland Terrier", "Lancashire Heeler", "Landseer", "Lapponian Herder",
+    "Large Münsterländer", "Leonberger", "Levriero Sardo", "Lhasa Apso", "Liangshan Dog",
+    "Lithuanian Hound", "Lobito Herreño", "Löwchen", "Lucas Terrier", "Lupo Italiano",
+    "Mackenzie River Husky", "Magyar Agár", "Mahratta Hound", "Majorca Shepherd Dog",
+    "Maltese", "Manchester Terrier", "Maneto", "Maremma Sheepdog", "Markiesje",
+    "Maremmano-Abruzzese Sheepdog", "Mastiff", "McNab", "Miniature American Shepherd",
+    "Miniature Bull Terrier", "Miniature Fox Terrier", "Miniature Pinscher",
+    "Miniature Schnauzer", "Molossus of Epirus", "Mongrel",
+    "Montenegrin Mountain Hound", "Moscow Watchdog", "Mountain Cur", "Mountain Feist",
+    "Mudhol Hound", "Mudi", "Munsterlander", "Neapolitan Mastiff",
+    "Nenets Herding Laika", "New Guinea singing dog", "New Zealand Heading Dog",
+    "Newfoundland", "Norfolk Terrier", "Norrbottenspets", "Northern Inuit Dog",
+    "Norwegian Buhund", "Nova Scotia Duck Tolling Retriever", "Old English Sheep Dog",
+    "Papillon", "Pekingese", "Petit Basset Griffon Vendéen", "Pharaoh Hound",
+    "Pointer", "Pomeranian", "Poodle", "Portuguese Water Dog", "Pug", "Puli",
+    "Pyrenean Mountain Dog", "Rhodesian Ridgeback", "Rottweiler", "Saint Bernard",
+    "Saluki", "Samoyed", "Schipperke", "Schnauzer", "Scottish Terrier",
+    "Sealyham Terrier", "Shar Pei", "Shetland Sheepdog", "Shih Tzu", "Siberian Husky",
+    "Skye Terrier", "Soft Coated Wheaten Terrier", "Staffordshire Bull Terrier",
+    "Sussex Spaniel", "Swedish Vallhund", "Tibetan Spaniel", "Tibetan Terrier",
+    "Weimaraner", "Welsh Corgi", "Welsh Springer Spaniel", "West Highland White Terrier",
+    "Whippet", "Yorkshire Terrier"
+]
+        cat_breeds = [
+    "Abyssinian", "Aegean", "American Bobtail", "American Curl", "American Ringtail",
+    "American Shorthair", "American Wirehair", "Arabian Mau", "Asian", 
+    "Asian Longhair (Tiffany)", "Australian Mist", "Balinese", "Bambino", 
+    "Bengal", "Birman", "Bombay", "Bramble", "Brazilian Shorthair", 
+    "British Longhair", "British Shorthair", "Burmese", "Burmilla",
+    "California Spangled (extinct)", "Chantilly-Tiffany", "Chartreux",
+    "Chausie", "Cheetoh", "Cornish Rex", "Cymric (Longhaired Manx)", 
+    "Desert Lynx", "Devon Rex", "Donskoy (Don Sphynx)", 
+    "Dragon Li (Chinese Li Hua)", "Egyptian Mau", 
+    "European Shorthair", "Exotic Shorthair", 
+    "FoldEx (Scottish Fold x Exotic)", 
+    "German Rex", "Havana Brown",
+    "Highlander (Highland Lynx)", 
+    "Himalayan (Colorpoint Persian)", 
+    "Japanese Bobtail", 
+    "Javanese (Colorpoint Longhair)", 
+    "Jungle Curl",
+    "Khao Manee", 
+    "Korat",
+    "Kurilian Bobtail",
+    "LaPerm",
+    "Lambkin",
+    "Lykoi",
+    "Maine Coon",
+    "Mandalay",
+    "Manx",
+    "Minskin",
+    "Minuet (Napoleon)",
+    "Mojave Spotted",
+    "Munchkin",
+    "Nebelung",
+    "Norwegian Forest Cat",
+    "Ocicat",
+    "Oriental Longhair",
+    "Oriental Shorthair",
+    "Persian (including Exotic Longhair)",
+    "Peterbald",
+    "Pixie-Bob",
+    "Raas (Busok)",
+    "Ragdoll",
+    "Ragamuffin",
+    "Russian Blue",
+    "Russian White, Black, and Tabby",
+    "Safari",
+    "Sam Sawet",
+    "Savannah",
+    "Scottish Fold",
+    "Selkirk Rex",
+    "Serengeti",
+    "Serrade Petit",
+    "Siamese",
+    "Siberian Forest Cat (Siberian)",
+    "Singapura",
+    "Skookum",
+    "Snowshoe",
+    "Sokoke",
+    "Somali",
+    "Sphynx",
+    "Suphalak",
+    "Thai (Traditional Siamese)",
+    "Tonkinese",
+    "Toyger",
+    "Turkish Angora",
+    "Turkish Van"
+]
+
+        if self.ids.dog_toggle.state == "down":
+            self.items = dog_breeds
+        else:
+            self.items = cat_breeds
 
         for item in self.items:
             btn = Button(text=item, size_hint_y=None, height=40)
@@ -124,11 +237,6 @@ class PetFinderScreen(Screen):
         self.ids.dropdown.dismiss()  # Close the dropdown
     
 
-    def populate_cards(self, search_results):
-        self.carousel.container.clear_widgets()
-        for pet in search_results:
-            card = PetCard(pet)
-            self.carousel.add_card(card)
 
     def on_search(self):
         """Search logic (mock)."""
@@ -267,8 +375,6 @@ class MyApp(MDApp):
         sm.add_widget(SignInScreen(name="signin"))
         sm.add_widget(PetFinderScreen(name="petfinder"))
         sm.add_widget(PetCardScreen(name="petcard"))
-        
-        sm.add_widget(PetSelectorScreen(name="pet_selector"))
         return sm
 
 
