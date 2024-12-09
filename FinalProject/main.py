@@ -123,11 +123,13 @@ class PetFinderScreen(Screen):
         """Populate the dropdown menu."""
         dropdown = self.ids.dropdown
         grid = self.ids.options_grid  # Reference the GridLayout inside the dropdown
+        grid.clear_widgets
 
         for item in self.items:
             btn = Button(text=item, size_hint_y=None, height=40)
             btn.bind(on_release=lambda btn, item=item: self.select_breed_option(item))
             grid.add_widget(btn)
+        dropdown.open(self.ids.main_button)
 
     def select_breed_option(self, option_text):
         """Handle selecting a Breed option from the dropdown."""
@@ -199,7 +201,7 @@ class PetFinderScreen(Screen):
                 return []
         except requests.exceptions.RequestException as e:
             print(f"Error fetching data: {e}")
-            return []   
+            return []
     
 class MyApp(App):
     def build(self):
@@ -211,7 +213,6 @@ class MyApp(App):
         sm.add_widget(SignUpScreen(name="signup"))
         sm.add_widget(SignInScreen(name="signin"))
         sm.add_widget(PetFinderScreen(name="petfinder"))
-        sm.add_widget(PetSelectorScreen(name="pet_selector"))
         return sm
 
 

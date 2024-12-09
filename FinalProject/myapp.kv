@@ -138,7 +138,6 @@
             on_press: root.sign_in()
 
 <PetFinderScreen>:
-    radius_input: radius
     FloatLayout:
         # Background Image
         Image:
@@ -335,8 +334,6 @@
         pos_hint: {"x": 0.05, "y": 0.9}
         on_press: app.root.current = "petfinder"
 
-                
-        
 
 <PetCard>:
     canvas.before:
@@ -362,10 +359,6 @@
             source: root.image
             size_hint_y: 0.8
 
-<PetCarousel>:
-    canvas.before:
-        Color:
-            rgba: 0.1, 0.1, 0.2, 0.1  # subtle backdrop shadow
 
 <CircularToggleButton@ToggleButton>:
     canvas.before:
