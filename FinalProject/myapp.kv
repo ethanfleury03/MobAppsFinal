@@ -198,7 +198,6 @@
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.33, "y": 0.81}
             font_size: 20
-            on_press: root.update_breed_dropdown()
 
         # Cat Button
         CircularToggleButton:
@@ -207,7 +206,6 @@
             size_hint: 0.03, 0.04
             pos_hint: {"x": 0.33, "y": 0.76}
             font_size: 20
-            on_press: root.update_breed_dropdown()
         
         # Male Button
         CircularToggleButton:
@@ -224,22 +222,12 @@
             pos_hint: {"x": 0.48, "y": 0.76}
             font_size: 20
         
-        # Dog Breed Drop Down Menu
-        Button:
-            id: main_button
-            text: "Breed"
-            size_hint: None, None
-            size: 200, 50
-            pos_hint: {"x": 0.6, "y": 0.8}
-            on_release: root.update_breed_dropdown()
-           
-
         # Age Range LABEL
         Label:
             text: "Age Range:"
             color: 0, 0, 0, 100
             font_size: 28
-            pos_hint: {"center_x": 0.33, "center_y": 0.7}
+            pos_hint: {"center_x": 0.31, "center_y": 0.7}
         
         # OPTIONAL LABEL
         Label:
@@ -250,21 +238,21 @@
 
         # 0-2 LABEL
         Label:
-            text: "0-2"
+            text: "puppy"
             color: 0, 0, 0, 100
             font_size: 28
             pos_hint: {"center_x": 0.43, "center_y": 0.7}
 
         # 3-7 LABEL
         Label:
-            text: "3-7"
+            text: "young"
             color: 0, 0, 0, 100
             font_size: 28
             pos_hint: {"center_x": 0.43, "center_y": 0.65}
 
         # 8+ LABEL
         Label:
-            text: "8+"
+            text: "adult"
             color: 0, 0, 0, 100
             font_size: 28
             pos_hint: {"center_x": 0.43, "center_y": 0.6}
@@ -369,26 +357,41 @@
 
 
 <PetCard>:
-    orientation: "vertical"
-    size_hint: None, None
-    size: dp(150), dp(200)
-    padding: dp(10)
-    spacing: dp(5)
-    md_bg_color: 1, 1, 1, 1
-    radius: [10]
-
-    Image:
-        source: root.image
-        size_hint_y: 0.7
-        allow_stretch: True
-        keep_ratio: True
+    BoxLayout:
+        size_hint_y: 0.6
+        Image:
+            source: root.image
+            allow_stretch: True
+            keep_ratio: True
 
     MDLabel:
         text: root.name
         halign: "center"
-        size_hint_y: 0.3
-        font_style: "Body1"
+        size_hint_y: 0.15
+        font_style: "H6"
 
+    GridLayout:
+        cols: 2
+        size_hint_y: 0.25
+        spacing: dp(5)
+
+        MDLabel:
+            text: "Age:"
+            font_style: "Caption"
+        MDLabel:
+            text: "2"  # Replace with actual age
+
+        MDLabel:
+            text: "Sex:"
+            font_style: "Caption"
+        MDLabel:
+            text: "M"  # Replace with actual sex
+
+        MDLabel:
+            text: "Location:"
+            font_style: "Caption"
+        MDLabel:
+            text: "Niagara Falls, NY"  # Replace with actual location
 
 <CircularToggleButton@ToggleButton>:
     canvas.before:
