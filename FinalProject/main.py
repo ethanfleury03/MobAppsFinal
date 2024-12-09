@@ -146,11 +146,13 @@ class PetCardScreen(Screen):
     age_range = StringProperty("")
 
     def on_enter(self):
-        self.populate_cards(self.fetch_pets())
+        pets = self.fetch_pets()
+        self.populate_cards(pets)
 
     def populate_cards(self, pets):
         scrollable_layout = self.ids.scrollable_layout
-        scrollable_layout.ids.card_grid.clear_widgets()
+        scrollable_layout.clear_cards()
+
         for pet in pets:
             card = PetCard(pet_data=pet)
             scrollable_layout.add_card(card)
@@ -178,6 +180,7 @@ class PetCardScreen(Screen):
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
+            print("Response content:", response.text)
             pets_data = response.json()
             print(f"Response Data: {pets_data}")
             if 'pet' in pets_data:
@@ -199,9 +202,24 @@ class PetCardScreen(Screen):
         }
 
 
-class ScrollableCardLayout(BoxLayout):
+class ScrollableCardLayout(ScrollView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.card_grid = GridLayout(
+            cols=4,
+            spacing=dp(10),
+            padding=dp(10),
+            size_hint_y=None,
+        )
+        self.card_grid.bind(minimum_height=self.card_grid.setter('height'))
+        self.add_widget(self.card_grid)
+
     def add_card(self, card):
-        self.ids.card_grid.add_widget(card)
+        self.card_grid.add_widget(card)
+    
+    def clear_cards(self):
+        self.card_grid.clear_widgets()
 
 
 class MyApp(MDApp):
