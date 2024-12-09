@@ -340,46 +340,39 @@
 <PetCardScreen>:
     FloatLayout:
     # White background image
-    Image:
-        source: "PetCardBg.jpg"
-        allow_stretch: True
-        keep_ratio: False
-        size_hint: 1, 1
-        pos_hint: {"x":0, "y": 0}
+        Image:
+            source: "PetCardBg.jpg"
+            allow_stretch: True
+            keep_ratio: False
+            size_hint: 1, 1
+            pos_hint: {"x":0, "y": 0}
     
     # Return to previous screen button 
-    Button:
-        text: "Back"
-        size_hint: 0.15, 0.05
-        pos_hint: {"x": 0.05, "y": 0.9}
-        on_press: app.root.current = "petfinder"
+        Button:
+            text: "Back"
+            size_hint: 0.15, 0.05
+            pos_hint: {"x": 0.05, "y": 0.9}
+            on_press: app.root.current = "petfinder"
 
-    ScrollableCardLayout:
-        id: scrollable_layout
-        pos_hint: {"x": 0, "y": 0}
-        size_hint: 1, 0.85
+        ScrollableCardLayout:
+            id: scrollable_layout
+            pos_hint: {"x": 0, "y": 0}
+            size_hint: 1, 0.85
 
 
     
-<ScrollableCardLayout>:
-    GridLayout:
-        id: card_grid
-        cols: 4
-        spacing: dp(10)
-        padding: dp(10)
-        size_hint_y: None
-        height: self.minimum_height
+
 
 
 <PetCard>:
-    orientation: "verticle"
+    orientation: "vertical"
     padding: dp(10)
     size_hint: None, None
     size: dp(150), dp(200)
     radius: [10]
 
     BoxLayout:
-        orientation: "verticle"
+        orientation: "vertical"
         spacing: dp(10)
 
         Image:

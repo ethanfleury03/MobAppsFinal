@@ -319,7 +319,7 @@ class PetCard(MDCard):
         # Add the content to the card
         self.add_widget(content)
 
-class PetCardScreen(Screen ):
+class PetCardScreen(Screen):
     city_or_zip = StringProperty("")
     geo_range = StringProperty("")
     species = StringProperty("")
@@ -328,17 +328,16 @@ class PetCardScreen(Screen ):
     age_range = StringProperty("")
 
     def on_enter(self):
-        pets = self.fetch_pets
+        pets = self.fetch_pets()
         self.populate_cards(pets)
 
     def populate_cards(self, pets):
-        print("IDs:", self.ids)  # This will show all available ids
-        print("Scrollable Layout:", self.ids.scrollable_layout)
         scrollable_layout = self.ids.scrollable_layout
-        scrollable_layout.card_grid.clear_widget(card)
+        scrollable_layout.clear_cards()
+
         for pet in pets:
             card = PetCard(pet_data=pet)
-            scrollable_layout.card_grid.add_widget(card)
+            scrollable_layout.add_card(card)
 
     def fetch_pets(self):
         BASE_URL = "https://api-staging.adoptapet.com/search/pet_search"
@@ -363,6 +362,7 @@ class PetCardScreen(Screen ):
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
+            print("Response content:", response.text)
             pets_data = response.json()
             if 'pet' in pets_data:
                 return [self.format_pet_data(pet) for pet in pets_data['pet']]
